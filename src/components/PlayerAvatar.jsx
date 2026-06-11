@@ -1,4 +1,4 @@
-import { CowokArt, CewekArt } from './AvatarArt.jsx';
+import AvatarFace from './AvatarFace.jsx';
 
 // avatar descriptor: null (letter) | {kind:'cowok'} | {kind:'cewek'} | {kind:'photo', src}
 export default function PlayerAvatar({
@@ -15,18 +15,9 @@ export default function PlayerAvatar({
         type="button"
         onClick={onOpenPicker}
         aria-label={`Pilih avatar ${player.name}`}
-        className="h-16 w-16 overflow-hidden rounded-full bg-slate-200 ring-2 ring-slate-300 active:ring-slate-400"
+        className="rounded-full active:opacity-80"
       >
-        {avatar == null && (
-          <span className="flex h-full w-full items-center justify-center text-2xl font-bold text-slate-700">
-            {player.name}
-          </span>
-        )}
-        {avatar?.kind === 'cowok' && <CowokArt />}
-        {avatar?.kind === 'cewek' && <CewekArt />}
-        {avatar?.kind === 'photo' && (
-          <img src={avatar.src} alt={`Foto ${player.name}`} className="h-full w-full object-cover" />
-        )}
+        <AvatarFace player={player} avatar={avatar} />
       </button>
       {showServeButton && (
         <button

@@ -57,11 +57,11 @@ export default function App() {
 
       {/* Avatar band: near the top, pulled toward center (not at screen edges) */}
       <div className="mt-3 flex items-start justify-center gap-24">
-        <div className="flex items-center gap-3">
+        <div className="flex items-start gap-3">
           <TeamPanel playerIds={TEAMS.left} {...teamProps} />
           <GamesBadge value={present.games.left} />
         </div>
-        <div className="flex items-center gap-3">
+        <div className="flex items-start gap-3">
           <GamesBadge value={present.games.right} />
           <TeamPanel playerIds={TEAMS.right} {...teamProps} />
         </div>
@@ -89,6 +89,8 @@ export default function App() {
       {present.status === 'finished' && (
         <WinnerOverlay
           winner={present.winner}
+          players={present.players}
+          avatars={avatars}
           onReset={newMatch}
           onUndo={() => dispatch({ type: 'UNDO' })}
         />
@@ -105,13 +107,17 @@ export default function App() {
   );
 }
 
+// Centered vertically against the avatar circle (h-16) so the chip stays level
+// regardless of the serve indicator / serve button below the avatars.
 function GamesBadge({ value }) {
   return (
-    <div
-      className="rounded-md bg-slate-100 px-2 py-1 text-sm font-bold text-slate-500"
-      title="Games dimenangkan"
-    >
-      {value}
+    <div className="flex h-16 items-center">
+      <span
+        className="min-w-[3rem] rounded-xl bg-slate-100 px-3 py-2 text-center text-3xl font-black text-slate-500"
+        title="Games dimenangkan"
+      >
+        {value}
+      </span>
     </div>
   );
 }
