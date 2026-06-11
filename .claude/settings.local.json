@@ -3,7 +3,10 @@
     "allow": [
       "Bash(npm install *)",
       "Bash(git add *)",
-      "Bash(git commit -q -m ' *)"
+      "Bash(git commit -q -m ' *)",
+      "Bash(npx vitest *)",
+      "Bash(npm test *)",
+      "Bash(npm run *)"
     ]
   }
 }
