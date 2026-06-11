@@ -39,6 +39,7 @@ npm run preview  # cek hasil build secara lokal
 - Tambah poin lewat **+ POIN KIRI** / **+ POIN KANAN**.
 - 40-40 = **GOLDEN** (1 poin penentu).
 - Salah pencet? Tekan **⤺ Revert** (bisa berkali-kali, kronologis).
+- **Klik avatar** untuk pilih karakter: ilustrasi cowok/cewek, 📷 foto pakai kamera, atau balik ke huruf. (Cuma tampil selama pertandingan — gak disimpan, hilang saat Match Baru/refresh. Kamera perlu localhost atau HTTPS.)
 - Match selesai → banner pemenang + **Match Baru** untuk reset.
 
 ## Catatan teknis
