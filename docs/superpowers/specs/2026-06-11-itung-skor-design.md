@@ -49,8 +49,10 @@ Aturan umum yang dipakai engine:
 - Match **selesai-seri** jika total game yang dimainkan = `maxGames` dan belum ada yang capai `winTarget` (hanya mungkin di Bo4 pada skor 2–2).
 
 ### 3.4 Ganti format saat main
-- Format bisa diubah kapan saja lewat **selektor di atas-tengah** (Bo3 / Bo4 / Bo5); yang aktif di-highlight.
-- Setelah format diubah, status menang/seri **dihitung ulang** dari jumlah game saat ini.
+- Format ditampilkan sebagai **tab/segmen di atas-tengah** (`Bo3 | Bo4 | Bo5`); tab yang aktif di-highlight.
+- Tab bisa **di-klik kapan saja** untuk pindah format — saat awal maupun di tengah match.
+- Pindah format **TIDAK me-reset poin/game yang sedang berjalan**. Yang berubah cuma "garis menang" (`winTarget`/`maxGames`), dan status menang/seri **dihitung ulang** dari jumlah game saat ini.
+  - Contoh: lagi 1–1 di Bo3, klik ke Bo5 → skor tetap 1–1, tapi sekarang butuh 3 game untuk menang.
 - Edge case: jika setelah ganti format kedua tim sama-sama memenuhi/melebihi `winTarget`, pemenang = tim dengan game terbanyak; jika sama → Seri. (Disimpan sederhana; ganti format paling ideal dilakukan di awal.)
 
 ## 4. Serve / giliran service
@@ -98,7 +100,7 @@ Aturan umum yang dipakai engine:
 
 - **Skor poin game berjalan** ditampilkan paling besar di tengah; saat 40–40 ganti jadi **"GOLDEN"**.
 - **Jumlah game** ("Games X") per tim tampil di dekat skor.
-- **Selektor format** real-time di atas-tengah, yang aktif ditonjolkan.
+- **Tab format** (`Bo3 | Bo4 | Bo5`) real-time di atas-tengah, tab aktif ditonjolkan; klik untuk ganti kapan saja.
 - Saat match **selesai/seri** → muncul **overlay banner pemenang** ("Tim Kiri Menang!" / "Tim Kanan Menang!" / "Seri") + tombol **"Match Baru"** (reset penuh). Overlay tetap bisa di-Revert kalau ternyata kepencet.
 
 ## 7. Arsitektur kode
