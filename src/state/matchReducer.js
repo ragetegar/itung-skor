@@ -3,7 +3,7 @@ import { currentServer } from '../lib/serve.js';
 
 export const PLAYER_IDS = ['A', 'B', 'C', 'D'];
 
-export function makeInitialPresent(format = 'bo3') {
+export function makeInitialPresent(format = 'bo4') {
   return {
     format,
     players: {
@@ -21,7 +21,7 @@ export function makeInitialPresent(format = 'bo3') {
 }
 
 export const initialState = {
-  present: makeInitialPresent('bo3'),
+  present: makeInitialPresent('bo4'),
   past: [],
 };
 

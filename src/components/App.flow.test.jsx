@@ -29,6 +29,7 @@ describe('App full-match flows', () => {
 
   it('Bo3: left winning 2 games shows winner overlay; Match Baru resets', () => {
     render(<App />);
+    fireEvent.click(screen.getByRole('button', { name: /Best of 3/i }));
     chooseServerA();
     winGame(/POIN KIRI/i); // 1-0
     winGame(/POIN KIRI/i); // 2-0 -> finished
@@ -50,6 +51,7 @@ describe('App full-match flows', () => {
 
   it('Revert undoes a finished match back to play', () => {
     render(<App />);
+    fireEvent.click(screen.getByRole('button', { name: /Best of 3/i }));
     chooseServerA();
     winGame(/POIN KIRI/i); // 1-0
     winGame(/POIN KIRI/i); // 2-0 -> finished overlay

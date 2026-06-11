@@ -9,9 +9,9 @@ import {
 } from './matchReducer.js';
 
 describe('initialState', () => {
-  it('starts pre-serve, bo3, zeroed', () => {
+  it('starts pre-serve, bo4, zeroed', () => {
     expect(initialState.present.status).toBe('pre-serve');
-    expect(initialState.present.format).toBe('bo3');
+    expect(initialState.present.format).toBe('bo4');
     expect(initialState.present.firstServerId).toBeNull();
     expect(initialState.present.points).toEqual({ left: 0, right: 0 });
     expect(initialState.present.games).toEqual({ left: 0, right: 0 });
@@ -84,7 +84,7 @@ describe('SET_FORMAT', () => {
     expect(changed.past).toHaveLength(2);
   });
   it('keeps pre-serve status when changed before serving', () => {
-    const s = matchReducer(initialState, { type: 'SET_FORMAT', format: 'bo4' });
+    const s = matchReducer(initialState, { type: 'SET_FORMAT', format: 'bo5' });
     expect(s.present.status).toBe('pre-serve');
   });
 });
