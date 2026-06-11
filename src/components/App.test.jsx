@@ -8,13 +8,13 @@ afterEach(cleanup);
 describe('App integration', () => {
   it('requires choosing a server before scoring, then scores a point', () => {
     render(<App />);
-    expect(screen.getByText('Pilih siapa yang serve duluan')).toBeTruthy();
+    expect(screen.getByText(/Pilih yang serve duluan/)).toBeTruthy();
 
     const serveButtons = screen.getAllByRole('button', { name: /Serve/i });
     expect(serveButtons).toHaveLength(4);
 
     fireEvent.click(serveButtons[0]); // A serves first
-    expect(screen.queryByText('Pilih siapa yang serve duluan')).toBeNull();
+    expect(screen.queryByText(/Pilih yang serve duluan/)).toBeNull();
     expect(screen.queryAllByRole('button', { name: /Serve/i })).toHaveLength(0);
 
     fireEvent.click(screen.getByRole('button', { name: /POIN KIRI/i }));

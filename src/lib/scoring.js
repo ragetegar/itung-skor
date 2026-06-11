@@ -5,11 +5,12 @@ const OTHER = { left: 'right', right: 'left' };
 export function formatConfig(format) {
   switch (format) {
     case 'bo3':
-      return { winTarget: 2, maxGames: 3 };
+      return { winTarget: 2, maxGames: 3, mustPlayAll: false };
     case 'bo4':
-      return { winTarget: 3, maxGames: 4 };
+      // Fixed 4-game format: semua 4 game tetap dimainkan walau sudah unggul 3-0.
+      return { winTarget: 3, maxGames: 4, mustPlayAll: true };
     case 'bo5':
-      return { winTarget: 3, maxGames: 5 };
+      return { winTarget: 3, maxGames: 5, mustPlayAll: false };
     default:
       throw new Error(`Unknown format: ${format}`);
   }
@@ -17,9 +18,10 @@ export function formatConfig(format) {
 
 // Decide match status/winner purely from games won + format.
 export function evaluateMatch(games, format) {
-  const { winTarget, maxGames } = formatConfig(format);
+  const { winTarget, maxGames, mustPlayAll } = formatConfig(format);
   const totalPlayed = games.left + games.right;
-  const reachedTarget = games.left >= winTarget || games.right >= winTarget;
+  const reachedTarget =
+    !mustPlayAll && (games.left >= winTarget || games.right >= winTarget);
 
   if (reachedTarget || totalPlayed >= maxGames) {
     if (games.left === games.right) return { status: 'finished', winner: 'tie' };

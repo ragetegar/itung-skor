@@ -10,7 +10,7 @@ export default function TeamPanel({
   onOpenPicker,
 }) {
   return (
-    <div className="flex gap-4">
+    <div className="flex gap-1 sm:gap-4">
       {playerIds.map((id) => (
         <PlayerAvatar
           key={id}

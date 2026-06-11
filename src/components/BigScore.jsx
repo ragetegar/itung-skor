@@ -7,10 +7,10 @@ export default function BigScore({ points, golden }) {
     );
   }
   return (
-    <div className="flex items-center gap-8 text-8xl font-black text-slate-800">
-      <span>{POINT_LABELS[points.left]}</span>
-      <span className="text-slate-300">—</span>
-      <span>{POINT_LABELS[points.right]}</span>
+    <div className="flex items-center gap-2 text-6xl font-black tabular-nums text-slate-800 sm:gap-8 sm:text-8xl">
+      <span className="w-20 text-center sm:w-28">{POINT_LABELS[points.left]}</span>
+      <span className="text-4xl text-slate-300 sm:text-8xl">—</span>
+      <span className="w-20 text-center sm:w-28">{POINT_LABELS[points.right]}</span>
     </div>
   );
 }

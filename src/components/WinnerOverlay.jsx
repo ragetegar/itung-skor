@@ -1,7 +1,7 @@
 import AvatarFace from './AvatarFace.jsx';
 import { TEAMS } from '../lib/serve.js';
 
-export default function WinnerOverlay({ winner, players, avatars, onReset, onUndo }) {
+export default function WinnerOverlay({ winner, games, players, avatars, onReset, onUndo }) {
   const text =
     winner === 'tie'
       ? 'SERI'
@@ -30,7 +30,12 @@ export default function WinnerOverlay({ winner, players, avatars, onReset, onUnd
           />
         ))}
       </div>
-      <div className="text-6xl font-black text-slate-900">{text}</div>
+      <div className="flex flex-col items-center gap-1">
+        <div className="text-center text-6xl font-black text-slate-900">{text}</div>
+        <div className="text-4xl font-bold tabular-nums text-slate-500">
+          {games.left} - {games.right}
+        </div>
+      </div>
       <div className="flex gap-4">
         <button
           type="button"

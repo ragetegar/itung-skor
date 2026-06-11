@@ -22,9 +22,9 @@ describe('App full-match flows', () => {
   it('serve indicator moves to the next server (A -> C) after a game', () => {
     render(<App />);
     chooseServerA();
-    expect(within(screen.getByLabelText('server').parentElement).getByText('A')).toBeTruthy();
+    expect(within(screen.getByLabelText('server').closest('.w-14')).getByText('A')).toBeTruthy();
     winGame(/POIN KIRI/i);
-    expect(within(screen.getByLabelText('server').parentElement).getByText('C')).toBeTruthy();
+    expect(within(screen.getByLabelText('server').closest('.w-14')).getByText('C')).toBeTruthy();
   });
 
   it('Bo3: left winning 2 games shows winner overlay; Match Baru resets', () => {
@@ -35,7 +35,7 @@ describe('App full-match flows', () => {
     winGame(/POIN KIRI/i); // 2-0 -> finished
     expect(screen.getByText('Tim Kiri Menang!')).toBeTruthy();
     fireEvent.click(screen.getByRole('button', { name: /Match Baru/i }));
-    expect(screen.getByText('Pilih siapa yang serve duluan')).toBeTruthy();
+    expect(screen.getByText(/Pilih yang serve duluan/)).toBeTruthy();
   });
 
   it('Bo4: reaching 2-2 shows SERI', () => {

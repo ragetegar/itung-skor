@@ -13,9 +13,10 @@ const noop = () => {};
 describe('WinnerOverlay', () => {
   it('shows only the winning team avatars (left)', () => {
     render(
-      <WinnerOverlay winner="left" players={players} avatars={noAvatars} onReset={noop} onUndo={noop} />,
+      <WinnerOverlay winner="left" games={{ left: 3, right: 1 }} players={players} avatars={noAvatars} onReset={noop} onUndo={noop} />,
     );
     expect(screen.getByText('Tim Kiri Menang!')).toBeTruthy();
+    expect(screen.getByText('3 - 1')).toBeTruthy();
     expect(screen.getByText('A')).toBeTruthy();
     expect(screen.getByText('B')).toBeTruthy();
     expect(screen.queryByText('C')).toBeNull();
@@ -24,9 +25,10 @@ describe('WinnerOverlay', () => {
 
   it('shows only the winning team avatars (right)', () => {
     render(
-      <WinnerOverlay winner="right" players={players} avatars={noAvatars} onReset={noop} onUndo={noop} />,
+      <WinnerOverlay winner="right" games={{ left: 1, right: 3 }} players={players} avatars={noAvatars} onReset={noop} onUndo={noop} />,
     );
     expect(screen.getByText('Tim Kanan Menang!')).toBeTruthy();
+    expect(screen.getByText('1 - 3')).toBeTruthy();
     expect(screen.getByText('C')).toBeTruthy();
     expect(screen.getByText('D')).toBeTruthy();
     expect(screen.queryByText('A')).toBeNull();
@@ -35,9 +37,10 @@ describe('WinnerOverlay', () => {
 
   it('shows all four avatars on a tie', () => {
     render(
-      <WinnerOverlay winner="tie" players={players} avatars={noAvatars} onReset={noop} onUndo={noop} />,
+      <WinnerOverlay winner="tie" games={{ left: 2, right: 2 }} players={players} avatars={noAvatars} onReset={noop} onUndo={noop} />,
     );
     expect(screen.getByText('SERI')).toBeTruthy();
+    expect(screen.getByText('2 - 2')).toBeTruthy();
     ['A', 'B', 'C', 'D'].forEach((letter) => {
       expect(screen.getByText(letter)).toBeTruthy();
     });

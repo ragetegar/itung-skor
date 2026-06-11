@@ -19,13 +19,13 @@ describe('POINT_LABELS', () => {
 
 describe('formatConfig', () => {
   it('bo3 -> first to 2 of 3', () => {
-    expect(formatConfig('bo3')).toEqual({ winTarget: 2, maxGames: 3 });
+    expect(formatConfig('bo3')).toEqual({ winTarget: 2, maxGames: 3, mustPlayAll: false });
   });
-  it('bo4 -> first to 3 of 4', () => {
-    expect(formatConfig('bo4')).toEqual({ winTarget: 3, maxGames: 4 });
+  it('bo4 -> always plays all 4 games', () => {
+    expect(formatConfig('bo4')).toEqual({ winTarget: 3, maxGames: 4, mustPlayAll: true });
   });
   it('bo5 -> first to 3 of 5', () => {
-    expect(formatConfig('bo5')).toEqual({ winTarget: 3, maxGames: 5 });
+    expect(formatConfig('bo5')).toEqual({ winTarget: 3, maxGames: 5, mustPlayAll: false });
   });
 });
 
@@ -85,6 +85,12 @@ describe('evaluateMatch', () => {
   });
   it('bo4 in progress at 2-1', () => {
     expect(evaluateMatch({ left: 2, right: 1 }, 'bo4')).toEqual({ status: 'in-progress', winner: null });
+  });
+  it('bo4 still in progress at 3-0 (4th game must be played)', () => {
+    expect(evaluateMatch({ left: 3, right: 0 }, 'bo4')).toEqual({ status: 'in-progress', winner: null });
+  });
+  it('bo4 left wins at 4-0 after all games played', () => {
+    expect(evaluateMatch({ left: 4, right: 0 }, 'bo4')).toEqual({ status: 'finished', winner: 'left' });
   });
   it('bo5 right wins at 1-3', () => {
     expect(evaluateMatch({ left: 1, right: 3 }, 'bo5')).toEqual({ status: 'finished', winner: 'right' });
