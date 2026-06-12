@@ -34,6 +34,7 @@ npm run preview  # cek hasil build secara lokal
 
 ## Cara pakai
 
+- Buka `/scoreboard` di tab/jendela kedua untuk tampilan layar besar yang mengikuti skor utama secara realtime.
 - Pilih format di tab atas (Best of 3 / 4 / 5) — bisa diganti kapan saja, skor tetap.
 - Klik tombol 🎾 Serve di salah satu pemain untuk menentukan server pertama (setelah suit).
 - Tambah poin lewat **+ POIN KIRI** / **+ POIN KANAN**.
@@ -47,3 +48,4 @@ npm run preview  # cek hasil build secara lokal
 - Logika skor murni di `src/lib/scoring.js` & rotasi serve di `src/lib/serve.js` (tanpa React, di-unit-test).
 - State match + riwayat undo di `src/state/matchReducer.js`. Server saat ini *diturunkan* dari (server pertama + jumlah game), jadi Revert otomatis mengembalikan giliran serve.
 - Tidak ada penyimpanan: refresh / Match Baru = reset.
+- Sinkronisasi `/scoreboard` memakai `BroadcastChannel` + `localStorage`, jadi berlaku antar-tab pada browser dan origin yang sama.

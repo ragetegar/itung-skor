@@ -1,4 +1,4 @@
-import { useReducer, useState } from 'react';
+import { useEffect, useReducer, useState } from 'react';
 import {
   matchReducer,
   initialState,
@@ -13,6 +13,7 @@ import BigScore from './BigScore.jsx';
 import Controls from './Controls.jsx';
 import WinnerOverlay from './WinnerOverlay.jsx';
 import AvatarPicker from './AvatarPicker.jsx';
+import { publishScoreboardSnapshot } from '../lib/scoreboardSync.js';
 
 const NO_AVATARS = { A: null, B: null, C: null, D: null };
 
@@ -26,6 +27,10 @@ export default function App() {
   const serverId = selectCurrentServer(present);
   const golden = isGolden(present);
   const firstServerChosen = present.firstServerId !== null;
+
+  useEffect(() => {
+    publishScoreboardSnapshot(present);
+  }, [present]);
 
   function pickAvatar(descriptor) {
     setAvatars((prev) => ({ ...prev, [pickerFor]: descriptor }));
