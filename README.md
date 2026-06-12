@@ -1,6 +1,6 @@
 # Itung Skor
 
-Papan skor padel doubles untuk iPad (landscape). React SPA statis, tanpa backend.
+Papan skor padel doubles untuk iPad (landscape). React SPA dengan relay realtime kecil di Cloudflare Worker.
 
 ## Jalankan lokal
 
@@ -22,19 +22,20 @@ npm run build    # output ke folder dist/
 npm run preview  # cek hasil build secara lokal
 ```
 
-## Deploy ke Cloudflare Pages
+## Deploy ke Cloudflare Workers
 
-1. Push repo ke GitHub.
-2. Cloudflare Dashboard → Workers & Pages → Create → Pages → Connect to Git.
-3. Build settings:
-   - Framework preset: **Vite**
-   - Build command: `npm run build`
-   - Build output directory: `dist`
-4. Save & Deploy. Tidak perlu environment variable / database.
+```bash
+npm run build
+npx wrangler deploy
+```
+
+Tidak perlu environment variable. Cloudflare Durable Object dipakai sebagai room WebSocket
+agar link scoreboard dapat dibuka dari perangkat lain.
 
 ## Cara pakai
 
-- Buka `/scoreboard` di tab/jendela kedua untuk tampilan layar besar yang mengikuti skor utama secara realtime.
+- iPad pencatat skor menampilkan kode scoreboard 4 digit.
+- Di layar lapangan, buka `/scoreboard`, masukkan kode tersebut, lalu skor akan mengikuti iPad secara realtime.
 - Pilih format di tab atas (Best of 3 / 4 / 5) — bisa diganti kapan saja, skor tetap.
 - Klik tombol 🎾 Serve di salah satu pemain untuk menentukan server pertama (setelah suit).
 - Tambah poin lewat **+ POIN KIRI** / **+ POIN KANAN**.
@@ -47,5 +48,5 @@ npm run preview  # cek hasil build secara lokal
 
 - Logika skor murni di `src/lib/scoring.js` & rotasi serve di `src/lib/serve.js` (tanpa React, di-unit-test).
 - State match + riwayat undo di `src/state/matchReducer.js`. Server saat ini *diturunkan* dari (server pertama + jumlah game), jadi Revert otomatis mengembalikan giliran serve.
-- Tidak ada penyimpanan: refresh / Match Baru = reset.
-- Sinkronisasi `/scoreboard` memakai `BroadcastChannel` + `localStorage`, jadi berlaku antar-tab pada browser dan origin yang sama.
+- State controller utama reset saat refresh / Match Baru. Snapshot scoreboard terakhir disimpan di room Cloudflare agar penonton baru langsung melihat skor terbaru.
+- Sinkronisasi lokal memakai `BroadcastChannel` + `localStorage`; sinkronisasi lintas perangkat memakai WebSocket Cloudflare Durable Object.

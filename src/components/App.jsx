@@ -13,7 +13,10 @@ import BigScore from './BigScore.jsx';
 import Controls from './Controls.jsx';
 import WinnerOverlay from './WinnerOverlay.jsx';
 import AvatarPicker from './AvatarPicker.jsx';
-import { publishScoreboardSnapshot } from '../lib/scoreboardSync.js';
+import {
+  getOrCreateScoreboardRoomId,
+  publishScoreboardSnapshot,
+} from '../lib/scoreboardSync.js';
 
 const NO_AVATARS = { A: null, B: null, C: null, D: null };
 
@@ -22,6 +25,7 @@ export default function App() {
   // Avatars are cosmetic only — kept outside the scoring/undo state and never persisted.
   const [avatars, setAvatars] = useState(NO_AVATARS);
   const [pickerFor, setPickerFor] = useState(null);
+  const [scoreboardRoomId] = useState(getOrCreateScoreboardRoomId);
 
   const { present } = state;
   const serverId = selectCurrentServer(present);
@@ -29,8 +33,8 @@ export default function App() {
   const firstServerChosen = present.firstServerId !== null;
 
   useEffect(() => {
-    publishScoreboardSnapshot(present);
-  }, [present]);
+    publishScoreboardSnapshot(present, scoreboardRoomId);
+  }, [present, scoreboardRoomId]);
 
   function pickAvatar(descriptor) {
     setAvatars((prev) => ({ ...prev, [pickerFor]: descriptor }));
@@ -53,11 +57,19 @@ export default function App() {
 
   return (
     <div className="relative flex h-full flex-col bg-slate-50 px-3 py-4 text-slate-900 sm:px-6">
-      <header className="flex justify-center">
+      <header className="relative flex justify-center">
         <FormatSelector
           format={present.format}
           onChange={(f) => dispatch({ type: 'SET_FORMAT', format: f })}
         />
+        <div className="absolute right-0 top-0 rounded-xl bg-slate-800 px-3 py-1 text-center text-white sm:px-4">
+          <p className="text-[9px] font-bold uppercase tracking-widest text-slate-300 sm:text-[10px]">
+            Kode Scoreboard
+          </p>
+          <p className="font-mono text-xl font-black leading-none tracking-[0.2em] sm:text-2xl">
+            {scoreboardRoomId}
+          </p>
+        </div>
       </header>
 
       {/* Avatar band: teams pinned to the screen edges (left = A/B, right = C/D). */}

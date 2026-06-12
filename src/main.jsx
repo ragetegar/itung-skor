@@ -4,7 +4,7 @@ import App from './components/App.jsx';
 import Scoreboard from './components/Scoreboard.jsx';
 import './index.css';
 
-const Page = window.location.pathname === '/scoreboard' ? Scoreboard : App;
+const Page = /^\/scoreboard(?:\/|$)/.test(window.location.pathname) ? Scoreboard : App;
 
 createRoot(document.getElementById('root')).render(
   <StrictMode>
