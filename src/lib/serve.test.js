@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest';
-import { TEAMS, serveSequence, currentServer } from './serve.js';
+import { TEAMS, currentServingTeam } from './serve.js';
 
 describe('TEAMS', () => {
   it('left is A,B and right is C,D', () => {
@@ -7,33 +7,19 @@ describe('TEAMS', () => {
   });
 });
 
-describe('serveSequence', () => {
-  it('starting A -> A,C,B,D', () => {
-    expect(serveSequence('A')).toEqual(['A', 'C', 'B', 'D']);
+describe('currentServingTeam', () => {
+  it('alternates teams per completed game starting from left', () => {
+    expect(currentServingTeam('left', 0)).toBe('left');
+    expect(currentServingTeam('left', 1)).toBe('right');
+    expect(currentServingTeam('left', 2)).toBe('left');
   });
-  it('starting C -> C,A,D,B', () => {
-    expect(serveSequence('C')).toEqual(['C', 'A', 'D', 'B']);
-  });
-  it('starting B -> B,C,A,D', () => {
-    expect(serveSequence('B')).toEqual(['B', 'C', 'A', 'D']);
-  });
-  it('starting D -> D,A,C,B', () => {
-    expect(serveSequence('D')).toEqual(['D', 'A', 'C', 'B']);
-  });
-  it('returns empty when there is no first server', () => {
-    expect(serveSequence(null)).toEqual([]);
-  });
-});
 
-describe('currentServer', () => {
-  it('rotates per completed game starting from A', () => {
-    expect(currentServer('A', 0)).toBe('A');
-    expect(currentServer('A', 1)).toBe('C');
-    expect(currentServer('A', 2)).toBe('B');
-    expect(currentServer('A', 3)).toBe('D');
-    expect(currentServer('A', 4)).toBe('A');
+  it('alternates teams per completed game starting from right', () => {
+    expect(currentServingTeam('right', 0)).toBe('right');
+    expect(currentServingTeam('right', 1)).toBe('left');
   });
-  it('returns null with no first server', () => {
-    expect(currentServer(null, 0)).toBeNull();
+
+  it('returns null before a serving team is chosen', () => {
+    expect(currentServingTeam(null, 0)).toBeNull();
   });
 });

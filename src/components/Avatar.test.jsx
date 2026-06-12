@@ -34,7 +34,7 @@ describe('Avatar picker', () => {
     fireEvent.click(screen.getByRole('button', { name: /Cowok/i }));
     expect(screen.getByRole('img', { name: /Avatar cowok/i })).toBeTruthy();
 
-    // play Bo3 to a finish: A serves, left wins 2 games
+    // play Bo3 to a finish: left serves, left wins 2 games
     fireEvent.click(screen.getByRole('button', { name: /Best of 3/i }));
     fireEvent.click(screen.getAllByRole('button', { name: /Serve/i })[0]);
     const winGame = () => {

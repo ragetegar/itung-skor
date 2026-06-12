@@ -3,7 +3,7 @@ import { POINT_LABELS, formatConfig, evaluateMatch, scorePoint } from './scoring
 
 const baseState = (over = {}) => ({
   format: 'bo3',
-  firstServerId: 'A',
+  firstServingTeam: 'left',
   points: { left: 0, right: 0 },
   games: { left: 0, right: 0 },
   status: 'in-progress',

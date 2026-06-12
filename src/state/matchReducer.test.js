@@ -2,7 +2,7 @@ import { describe, it, expect } from 'vitest';
 import {
   matchReducer,
   initialState,
-  selectCurrentServer,
+  selectCurrentServingTeam,
   isGolden,
   canUndo,
   completedGames,
@@ -12,30 +12,30 @@ describe('initialState', () => {
   it('starts pre-serve, bo4, zeroed', () => {
     expect(initialState.present.status).toBe('pre-serve');
     expect(initialState.present.format).toBe('bo4');
-    expect(initialState.present.firstServerId).toBeNull();
+    expect(initialState.present.firstServingTeam).toBeNull();
     expect(initialState.present.points).toEqual({ left: 0, right: 0 });
     expect(initialState.present.games).toEqual({ left: 0, right: 0 });
     expect(initialState.past).toEqual([]);
   });
 });
 
-describe('SET_FIRST_SERVER', () => {
-  it('sets server and moves to in-progress', () => {
-    const s = matchReducer(initialState, { type: 'SET_FIRST_SERVER', playerId: 'C' });
-    expect(s.present.firstServerId).toBe('C');
+describe('SET_FIRST_SERVING_TEAM', () => {
+  it('sets serving team and moves to in-progress', () => {
+    const s = matchReducer(initialState, { type: 'SET_FIRST_SERVING_TEAM', team: 'right' });
+    expect(s.present.firstServingTeam).toBe('right');
     expect(s.present.status).toBe('in-progress');
     expect(s.past).toHaveLength(1);
   });
-  it('ignores a second server choice (use UNDO to change)', () => {
-    const s1 = matchReducer(initialState, { type: 'SET_FIRST_SERVER', playerId: 'C' });
-    const s2 = matchReducer(s1, { type: 'SET_FIRST_SERVER', playerId: 'A' });
-    expect(s2.present.firstServerId).toBe('C');
+  it('ignores a second team choice (use UNDO to change)', () => {
+    const s1 = matchReducer(initialState, { type: 'SET_FIRST_SERVING_TEAM', team: 'right' });
+    const s2 = matchReducer(s1, { type: 'SET_FIRST_SERVING_TEAM', team: 'left' });
+    expect(s2.present.firstServingTeam).toBe('right');
   });
 });
 
 describe('SCORE_POINT', () => {
   it('adds a point and records history', () => {
-    const s1 = matchReducer(initialState, { type: 'SET_FIRST_SERVER', playerId: 'A' });
+    const s1 = matchReducer(initialState, { type: 'SET_FIRST_SERVING_TEAM', team: 'left' });
     const s2 = matchReducer(s1, { type: 'SCORE_POINT', team: 'left' });
     expect(s2.present.points.left).toBe(1);
     expect(s2.past).toHaveLength(2);
@@ -48,7 +48,7 @@ describe('SCORE_POINT', () => {
 
 describe('UNDO', () => {
   it('reverts the last action exactly', () => {
-    const s1 = matchReducer(initialState, { type: 'SET_FIRST_SERVER', playerId: 'A' });
+    const s1 = matchReducer(initialState, { type: 'SET_FIRST_SERVING_TEAM', team: 'left' });
     const s2 = matchReducer(s1, { type: 'SCORE_POINT', team: 'left' });
     const s3 = matchReducer(s2, { type: 'SCORE_POINT', team: 'right' });
     const back = matchReducer(s3, { type: 'UNDO' });
@@ -56,7 +56,7 @@ describe('UNDO', () => {
     expect(back.past).toHaveLength(2);
   });
   it('undo across a game win restores points and games', () => {
-    let s = matchReducer(initialState, { type: 'SET_FIRST_SERVER', playerId: 'A' });
+    let s = matchReducer(initialState, { type: 'SET_FIRST_SERVING_TEAM', team: 'left' });
     s = matchReducer(s, { type: 'SCORE_POINT', team: 'left' }); // 15
     s = matchReducer(s, { type: 'SCORE_POINT', team: 'left' }); // 30
     s = matchReducer(s, { type: 'SCORE_POINT', team: 'left' }); // 40
@@ -75,7 +75,7 @@ describe('UNDO', () => {
 
 describe('SET_FORMAT', () => {
   it('changes format without resetting the running score', () => {
-    let s = matchReducer(initialState, { type: 'SET_FIRST_SERVER', playerId: 'A' });
+    let s = matchReducer(initialState, { type: 'SET_FIRST_SERVING_TEAM', team: 'left' });
     s = { ...s, present: { ...s.present, games: { left: 1, right: 1 } } };
     const changed = matchReducer(s, { type: 'SET_FORMAT', format: 'bo5' });
     expect(changed.present.format).toBe('bo5');
@@ -92,21 +92,21 @@ describe('SET_FORMAT', () => {
 describe('RESET', () => {
   it('clears to a fresh state but keeps the chosen format', () => {
     let s = matchReducer(initialState, { type: 'SET_FORMAT', format: 'bo5' });
-    s = matchReducer(s, { type: 'SET_FIRST_SERVER', playerId: 'A' });
+    s = matchReducer(s, { type: 'SET_FIRST_SERVING_TEAM', team: 'left' });
     const reset = matchReducer(s, { type: 'RESET' });
     expect(reset.present.format).toBe('bo5');
     expect(reset.present.status).toBe('pre-serve');
-    expect(reset.present.firstServerId).toBeNull();
+    expect(reset.present.firstServingTeam).toBeNull();
     expect(reset.past).toEqual([]);
   });
 });
 
 describe('selectors', () => {
-  it('selectCurrentServer derives from first server and completed games', () => {
-    let s = matchReducer(initialState, { type: 'SET_FIRST_SERVER', playerId: 'A' });
-    expect(selectCurrentServer(s.present)).toBe('A');
+  it('selectCurrentServingTeam derives from first team and completed games', () => {
+    let s = matchReducer(initialState, { type: 'SET_FIRST_SERVING_TEAM', team: 'left' });
+    expect(selectCurrentServingTeam(s.present)).toBe('left');
     s = { ...s, present: { ...s.present, games: { left: 1, right: 0 } } };
-    expect(selectCurrentServer(s.present)).toBe('C');
+    expect(selectCurrentServingTeam(s.present)).toBe('right');
   });
   it('isGolden is true only at 40-40', () => {
     expect(isGolden({ points: { left: 3, right: 3 } })).toBe(true);
@@ -114,7 +114,7 @@ describe('selectors', () => {
   });
   it('canUndo reflects whether history exists', () => {
     expect(canUndo(initialState)).toBe(false);
-    const s = matchReducer(initialState, { type: 'SET_FIRST_SERVER', playerId: 'A' });
+    const s = matchReducer(initialState, { type: 'SET_FIRST_SERVING_TEAM', team: 'left' });
     expect(canUndo(s)).toBe(true);
   });
   it('completedGames sums games played', () => {

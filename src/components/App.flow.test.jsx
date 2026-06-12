@@ -1,12 +1,11 @@
 // @vitest-environment jsdom
 import { describe, it, expect, afterEach } from 'vitest';
-import { render, screen, fireEvent, cleanup, within } from '@testing-library/react';
+import { render, screen, fireEvent, cleanup } from '@testing-library/react';
 import App from './App.jsx';
 
 afterEach(cleanup);
 
-function chooseServerA() {
-  // first serve button belongs to A (left team, first avatar)
+function chooseLeftServingTeam() {
   fireEvent.click(screen.getAllByRole('button', { name: /Serve/i })[0]);
 }
 
@@ -19,29 +18,30 @@ function winGame(buttonName) {
 }
 
 describe('App full-match flows', () => {
-  it('serve indicator moves to the next server (A -> C) after a game', () => {
+  it('serve indicator moves to the other team after a game', () => {
     render(<App />);
-    chooseServerA();
-    expect(within(screen.getByLabelText('server').closest('.w-14')).getByText('A')).toBeTruthy();
+    chooseLeftServingTeam();
+    expect(screen.getAllByLabelText('serving team')).toHaveLength(1);
+    expect(screen.getByLabelText('serving team').parentElement.parentElement.textContent).toContain('A');
     winGame(/POIN KIRI/i);
-    expect(within(screen.getByLabelText('server').closest('.w-14')).getByText('C')).toBeTruthy();
+    expect(screen.getByLabelText('serving team').parentElement.parentElement.textContent).toContain('C');
   });
 
   it('Bo3: left winning 2 games shows winner overlay; Match Baru resets', () => {
     render(<App />);
     fireEvent.click(screen.getByRole('button', { name: /Best of 3/i }));
-    chooseServerA();
+    chooseLeftServingTeam();
     winGame(/POIN KIRI/i); // 1-0
     winGame(/POIN KIRI/i); // 2-0 -> finished
     expect(screen.getByText('Tim Kiri Menang!')).toBeTruthy();
     fireEvent.click(screen.getByRole('button', { name: /Match Baru/i }));
-    expect(screen.getByText(/Pilih yang serve duluan/)).toBeTruthy();
+    expect(screen.getByText(/Pilih tim yang serve duluan/)).toBeTruthy();
   });
 
   it('Bo4: reaching 2-2 shows SERI', () => {
     render(<App />);
     fireEvent.click(screen.getByRole('button', { name: /Best of 4/i }));
-    chooseServerA();
+    chooseLeftServingTeam();
     winGame(/POIN KIRI/i); // 1-0
     winGame(/POIN KANAN/i); // 1-1
     winGame(/POIN KIRI/i); // 2-1
@@ -52,7 +52,7 @@ describe('App full-match flows', () => {
   it('Revert undoes a finished match back to play', () => {
     render(<App />);
     fireEvent.click(screen.getByRole('button', { name: /Best of 3/i }));
-    chooseServerA();
+    chooseLeftServingTeam();
     winGame(/POIN KIRI/i); // 1-0
     winGame(/POIN KIRI/i); // 2-0 -> finished overlay
     expect(screen.getByText('Tim Kiri Menang!')).toBeTruthy();

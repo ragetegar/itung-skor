@@ -93,6 +93,11 @@ function createRoomId() {
 }
 
 function roomWebSocketUrl(roomId) {
+  const configuredRelay = import.meta.env.VITE_SCOREBOARD_RELAY_URL?.replace(/\/$/, '');
+  if (configuredRelay) {
+    return `${configuredRelay}/api/scoreboard/${roomId}`;
+  }
+
   const protocol = window.location.protocol === 'https:' ? 'wss:' : 'ws:';
   return `${protocol}//${window.location.host}/api/scoreboard/${roomId}`;
 }

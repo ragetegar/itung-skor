@@ -2,7 +2,7 @@ import { useEffect, useReducer, useState } from 'react';
 import {
   matchReducer,
   initialState,
-  selectCurrentServer,
+  selectCurrentServingTeam,
   isGolden,
   canUndo,
 } from '../state/matchReducer.js';
@@ -28,9 +28,9 @@ export default function App() {
   const [scoreboardRoomId] = useState(getOrCreateScoreboardRoomId);
 
   const { present } = state;
-  const serverId = selectCurrentServer(present);
+  const servingTeam = selectCurrentServingTeam(present);
   const golden = isGolden(present);
-  const firstServerChosen = present.firstServerId !== null;
+  const firstServingTeamChosen = present.firstServingTeam !== null;
 
   useEffect(() => {
     publishScoreboardSnapshot(present, scoreboardRoomId);
@@ -49,9 +49,6 @@ export default function App() {
   const teamProps = {
     players: present.players,
     avatars,
-    currentServerId: serverId,
-    firstServerChosen,
-    onChooseServe: (id) => dispatch({ type: 'SET_FIRST_SERVER', playerId: id }),
     onOpenPicker: setPickerFor,
   };
 
@@ -75,25 +72,37 @@ export default function App() {
       {/* Avatar band: teams pinned to the screen edges (left = A/B, right = C/D). */}
       <div className="mx-auto mt-3 flex w-full max-w-md items-start justify-between">
         <div className="flex items-start gap-1 sm:gap-3">
-          <TeamPanel playerIds={TEAMS.left} {...teamProps} />
+          <TeamPanel
+            playerIds={TEAMS.left}
+            isServing={servingTeam === 'left'}
+            showServeButton={!firstServingTeamChosen}
+            onChooseServe={() => dispatch({ type: 'SET_FIRST_SERVING_TEAM', team: 'left' })}
+            {...teamProps}
+          />
           <GamesBadge value={present.games.left} />
         </div>
         <div className="flex items-start gap-1 sm:gap-3">
           <GamesBadge value={present.games.right} />
-          <TeamPanel playerIds={TEAMS.right} {...teamProps} />
+          <TeamPanel
+            playerIds={TEAMS.right}
+            isServing={servingTeam === 'right'}
+            showServeButton={!firstServingTeamChosen}
+            onChooseServe={() => dispatch({ type: 'SET_FIRST_SERVING_TEAM', team: 'right' })}
+            {...teamProps}
+          />
         </div>
       </div>
 
       <main className="flex flex-1 items-center justify-center">
         <div className="flex flex-col items-center gap-3">
           <BigScore points={present.points} golden={golden} />
-          {!firstServerChosen && (
+          {!firstServingTeamChosen && (
             <div className="animate-pulse rounded-2xl bg-emerald-500 px-6 py-3 text-center shadow-lg shadow-emerald-500/30">
               <p className="text-2xl font-black uppercase tracking-wide text-white">
-                🎾 Pilih yang serve duluan
+                🎾 Pilih tim yang serve duluan
               </p>
               <p className="text-sm font-medium text-emerald-50">
-                Tap tombol <span className="font-bold">Serve</span> di salah satu pemain
+                Tap tombol <span className="font-bold">Serve</span> di bawah salah satu tim
               </p>
             </div>
           )}

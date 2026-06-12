@@ -6,15 +6,15 @@ import App from './App.jsx';
 afterEach(cleanup);
 
 describe('App integration', () => {
-  it('requires choosing a server before scoring, then scores a point', () => {
+  it('requires choosing a serving team before scoring, then scores a point', () => {
     render(<App />);
-    expect(screen.getByText(/Pilih yang serve duluan/)).toBeTruthy();
+    expect(screen.getByText(/Pilih tim yang serve duluan/)).toBeTruthy();
 
     const serveButtons = screen.getAllByRole('button', { name: /Serve/i });
-    expect(serveButtons).toHaveLength(4);
+    expect(serveButtons).toHaveLength(2);
 
-    fireEvent.click(serveButtons[0]); // A serves first
-    expect(screen.queryByText(/Pilih yang serve duluan/)).toBeNull();
+    fireEvent.click(serveButtons[0]); // left team serves first
+    expect(screen.queryByText(/Pilih tim yang serve duluan/)).toBeNull();
     expect(screen.queryAllByRole('button', { name: /Serve/i })).toHaveLength(0);
 
     fireEvent.click(screen.getByRole('button', { name: /POIN KIRI/i }));
@@ -23,7 +23,7 @@ describe('App integration', () => {
 
   it('shows GOLDEN at 40-40', () => {
     render(<App />);
-    fireEvent.click(screen.getAllByRole('button', { name: /Serve/i })[0]); // A serves
+    fireEvent.click(screen.getAllByRole('button', { name: /Serve/i })[0]); // left serves
     const left = screen.getByRole('button', { name: /POIN KIRI/i });
     const right = screen.getByRole('button', { name: /POIN KANAN/i });
 

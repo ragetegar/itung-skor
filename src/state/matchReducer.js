@@ -1,5 +1,5 @@
 import { scorePoint, evaluateMatch } from '../lib/scoring.js';
-import { currentServer } from '../lib/serve.js';
+import { currentServingTeam } from '../lib/serve.js';
 
 export const PLAYER_IDS = ['A', 'B', 'C', 'D'];
 
@@ -12,7 +12,7 @@ export function makeInitialPresent(format = 'bo4') {
       C: { name: 'C', avatar: null },
       D: { name: 'D', avatar: null },
     },
-    firstServerId: null,
+    firstServingTeam: null,
     points: { left: 0, right: 0 },
     games: { left: 0, right: 0 },
     status: 'pre-serve',
@@ -32,11 +32,11 @@ function commit(state, present) {
 
 export function matchReducer(state, action) {
   switch (action.type) {
-    case 'SET_FIRST_SERVER': {
-      if (state.present.firstServerId) return state;
+    case 'SET_FIRST_SERVING_TEAM': {
+      if (state.present.firstServingTeam) return state;
       return commit(state, {
         ...state.present,
-        firstServerId: action.playerId,
+        firstServingTeam: action.team,
         status: 'in-progress',
       });
     }
@@ -79,8 +79,8 @@ export function completedGames(present) {
   return present.games.left + present.games.right;
 }
 
-export function selectCurrentServer(present) {
-  return currentServer(present.firstServerId, completedGames(present));
+export function selectCurrentServingTeam(present) {
+  return currentServingTeam(present.firstServingTeam, completedGames(present));
 }
 
 export function isGolden(present) {
